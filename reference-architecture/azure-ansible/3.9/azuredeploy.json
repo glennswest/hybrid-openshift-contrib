@@ -779,7 +779,7 @@
         },
         "parameters" : {
           "vmName" : {
-            "value" : "[concat('node', padLeft(add(copyindex(), 1), 2, '0'))]"
+            "value" : "[concat('winnode', padLeft(add(copyindex(), 1), 2, '0'))]"
           },
           "sa" : {
             "value" : "[variables('nodeStorageName')]"
@@ -794,7 +794,7 @@
             "value" : "[parameters('adminUsername')]"
           },
           "adminPassword" : {
-            "value" : "[parameters('adminUsername')]"
+            "value" : "[parameters('adminPassword')]"
           },
           "sshKeyData" : {
             "value" : "[parameters('sshKeyData')]"
