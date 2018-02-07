@@ -150,11 +150,11 @@
         "autoUpgradeMinorVersion" : true,
         "settings" : {
           "fileUris" : [
-            "[concat(parameters('baseTemplateUrl'), 'node.sh')]"
+            "[concat(parameters('baseTemplateUrl'), 'nodewin.ps1')]"
           ]
         },
         "protectedSettings" : {
-          "commandToExecute" : "sh node.sh"
+          "commandToExecute" : "powershell -ExecutionPolicy Unrestricted -File nodewin.ps1"
         }
       }
     }
