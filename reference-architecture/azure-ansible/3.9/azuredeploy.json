@@ -30,8 +30,17 @@
     },
     "numberOfNodes" : {
       "type" : "int",
-      "defaultValue" : 3,
-      "minValue" : 3,
+      "defaultValue" : 1,
+      "minValue" : 1,
+      "maxValue" : 30,
+      "metadata" : {
+        "description" : "Number of OpenShift Nodes to deploy (max 30)"
+      }
+    },
+    "numberOfWinNodes" : {
+      "type" : "int",
+      "defaultValue" : 1,
+      "minValue" : 1,
       "maxValue" : 30,
       "metadata" : {
         "description" : "Number of OpenShift Nodes to deploy (max 30)"
@@ -260,6 +269,19 @@
         "description" : "The size of the each Node Virtual Machine."
       }
     },
+    "winVMSize" : {
+      "type" : "string",
+      "defaultValue" : "Standard_D8_v3",
+      "allowedValues" : [
+        "Standard_D8_v3",
+        "Standard_D4_v3",
+        "Standard_D16_v3",
+        "Standard_E16_v3"
+      ],
+      "metadata" : {
+        "description" : "The size of the each Node Virtual Machine."
+      }
+    },
     "rhsmUsernamePasswordOrActivationKey" : {
       "type" : "string",
       "minLength" : 1,
@@ -344,13 +366,14 @@
     }
   },
   "variables" : {
-    "gituser" : "openshift",
+    "gituser" : "glennswest",
     "branch" : "master",
-    "version" : "3.7",
-    "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/',variables('gituser'),'/openshift-ansible-contrib/',variables('branch'),'/reference-architecture/azure-ansible/',variables('version'),'/')]",
+    "version" : "3.9",
+    "baseTemplateUrl" : "[concat('https://raw.githubusercontent.com/',variables('gituser'),'/hybrid-ansible-contrib/',variables('branch'),'/reference-architecture/azure-ansible/',variables('version'),'/')]",
     "baseVMachineTemplateUriInfranode" : "[concat(variables('baseTemplateUrl'), 'infranode.json')]",
     "baseVMachineTemplateUriNode" : "[concat(variables('baseTemplateUrl'), 'node.json')]",
     "baseVMachineTemplateUriMaster" : "[concat(variables('baseTemplateUrl'), 'master.json')]",
+    "baseVMachineTemplateUriWinNode" : "[concat(variables('baseTemplateUrl'), 'nodewin.json')]",
     "location" : "[resourceGroup().location]",
     "virtualNetworkName" : "openshiftVnet",
     "addressPrefix" : "10.0.0.0/16",
@@ -605,7 +628,13 @@
     "apiVersionNetwork" : "2016-03-30",
     "tmApiVersion" : "2015-11-01",
     "apiVersionStorage" : "2015-06-15",
-    "apiVersionLinkTemplate" : "2015-01-01"
+    "apiVersionLinkTemplate" : "2015-01-01",
+    "windows" : {
+      "publisher" : "MicrosoftWindowsServer",
+      "offer" : "WindowsServer",
+      "sku" : "2016-Datacenter-with-Containers",
+      "version" : "latest"
+    }
   },
   "resources" : [
     {
@@ -722,6 +751,55 @@
           },
           "imageReference" : {
             "value" : "[variables(parameters('image'))]"
+          },
+          "availabilitySet" : {
+            "value" : "['nodeavailabilityset']"
+          }
+        }
+      }
+    },
+    {
+      "name" : "[concat('winnodeSet', copyindex())]",
+      "type" : "Microsoft.Resources/deployments",
+      "apiVersion" : "2015-01-01",
+      "copy" : {
+        "name" : "winnodeSet",
+        "count" : "[parameters('numberOfWinNodes')]"
+      },
+      "dependsOn" : [
+        "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]",
+        "[concat('Microsoft.Storage/storageAccounts/', variables('nodeStorageName'))]"
+      ],
+      "properties" : {
+        "mode" : "Incremental",
+        "templateLink" : {
+          "uri" : "[variables('baseVMachineTemplateUriWinNode')]",
+          "contentVersion" : "1.0.0.0"
+        },
+        "parameters" : {
+          "vmName" : {
+            "value" : "[concat('node', padLeft(add(copyindex(), 1), 2, '0'))]"
+          },
+          "sa" : {
+            "value" : "[variables('nodeStorageName')]"
+          },
+          "subnetRef" : {
+            "value" : "[variables('nodeSubnetRef')]"
+          },
+          "vmSize" : {
+            "value" : "[parameters('winVMSize')]"
+          },
+          "adminUsername" : {
+            "value" : "[parameters('adminUsername')]"
+          },
+          "sshKeyData" : {
+            "value" : "[parameters('sshKeyData')]"
+          },
+          "baseTemplateUrl" : {
+            "value" : "[variables('baseTemplateUrl')]"
+          },
+          "imageReference" : {
+            "value" : "[variables('windows')]"
           },
           "availabilitySet" : {
             "value" : "['nodeavailabilityset']"
