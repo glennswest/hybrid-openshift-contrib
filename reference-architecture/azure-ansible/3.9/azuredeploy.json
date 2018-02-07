@@ -792,6 +792,9 @@
           "adminUsername" : {
             "value" : "[parameters('adminUsername')]"
           },
+          "adminPassword" : {
+            "value" : "[parameters('adminUsername')]"
+          },
           "sshKeyData" : {
             "value" : "[parameters('sshKeyData')]"
           },

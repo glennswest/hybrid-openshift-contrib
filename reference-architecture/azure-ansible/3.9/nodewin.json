@@ -17,6 +17,9 @@
     "adminUsername" : {
       "type" : "string"
     },
+    "adminPassword" : {
+      "type" : "string"
+    },
     "sshKeyData" : {
       "type" : "securestring",
       "metadata" : {
@@ -80,7 +83,8 @@
         },
         "osProfile" : {
           "computerName" : "[parameters('vmName')]",
-          "adminUsername" : "[parameters('adminUsername')]"
+          "adminUsername" : "[parameters('adminUsername')]",
+          "adminPassword" : "[parameters('adminPassword')]"
         },
         "storageProfile" : {
           "imageReference" : "[parameters('imageReference')]",
