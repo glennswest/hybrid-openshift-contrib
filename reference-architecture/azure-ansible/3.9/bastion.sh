@@ -155,6 +155,7 @@ chmod +x /root/setup_ssmtp.sh
 
 sleep 30
 echo "${RESOURCEGROUP} Bastion Host is starting software update" | mail -s "${RESOURCEGROUP} Bastion Software Install" ${RHNUSERNAME} || true
+yum install -y python-dns
 cat > /home/${AUSERNAME}/setup-repo.yml <<EOF
 #!/usr/bin/ansible-playbook
 - hosts: localhost
@@ -1225,7 +1226,7 @@ ansible-playbook  /home/${AUSERNAME}/subscribe.yml
 /home/${AUSERNAME}/create_azure_storage_container.sh sareg${RESOURCEGROUP} "registry"
 
 echo "${RESOURCEGROUP} Bastion Host is starting ansible BYO" | mail -s "${RESOURCEGROUP} Bastion BYO Install" ${RHNUSERNAME} || true
-ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml < /dev/null
+ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null
 
 wget http://master1:8443/api > healtcheck.out
 
