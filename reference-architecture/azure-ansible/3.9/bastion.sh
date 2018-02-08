@@ -162,6 +162,8 @@ cat > /home/${AUSERNAME}/setup-repo.yml <<EOF
   gather_facts: no
   serial: 1
   become: yes
+  vars:
+    bastionip: "{{lookup('dig', 'bastion')}}"
   tasks:
   - name: Install the docker
     yum: name=docker state=latest
@@ -176,6 +178,10 @@ cat > /home/${AUSERNAME}/setup-repo.yml <<EOF
     shell: docker pull hybrid.azurecr.io/svcrepo
   - name: Startup the svcrepo on port 80
     shell: docker run -d -p 80 --net=host --name svcrepo hybrid.azurecr.io/svcrepo:latest
+  - name: Open the port 
+    shell: firewall-cmd --zone=public --add-port=80/tcp --permanent
+  - name: Reload Firewall
+    shell: firewall-cmd --reload
   - name: Setup repo for svcrepo
     yum_repository:
            state: present
@@ -499,7 +505,6 @@ cat <<EOF > /home/${AUSERNAME}/subscribe.yml
 - hosts: all
   vars:
     description: "Subscribe OCP"
-    bastionip: "{{lookup('dig', 'bastion')}}"
   tasks:
   - name: check connection
     ping:
