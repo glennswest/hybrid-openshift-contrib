@@ -181,7 +181,7 @@ cat > /home/${AUSERNAME}/setup-repo.yml <<EOF
            state: present
            name: openshift_3.9
            description: Openshift 3.9 Development Puddle
-           baseurl: http://bastion/repo
+           baseurl: http://{{bastionip}}/repo
            enabled: yes
            gpgcheck: no
 EOF
@@ -499,6 +499,7 @@ cat <<EOF > /home/${AUSERNAME}/subscribe.yml
 - hosts: all
   vars:
     description: "Subscribe OCP"
+    bastionip: "{{lookup('dig', 'bastion')}}"
   tasks:
   - name: check connection
     ping:
