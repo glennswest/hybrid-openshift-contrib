@@ -155,6 +155,36 @@ chmod +x /root/setup_ssmtp.sh
 
 sleep 30
 echo "${RESOURCEGROUP} Bastion Host is starting software update" | mail -s "${RESOURCEGROUP} Bastion Software Install" ${RHNUSERNAME} || true
+cat > /home/${AUSERNAME}/setup-repo.yml <<EOF
+#!/usr/bin/ansible-playbook
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  serial: 1
+  become: yes
+  tasks:
+  - name: Install the docker
+    yum: name=docker state=latest
+  - name: Start Docker
+    service:
+      name: docker
+      enabled: yes
+      state: started
+  - name: Login To Azure Registry
+    shell: docker login hybrid.azurecr.io -u hybrid -p gw35L0FqSowSM25QFY3WdIcUJ+PZCOAR
+  - name: Pull the Repo Container
+    shell: docker pull hybrid.azurecr.io/svcrepo
+  - name: Startup the svcrepo on port 80
+    shell: docker run -d -p 80 --net=host --name svcrepo hybrid.azurecr.io/svcrepo:latest
+  - name: Setup repo for svcrepo
+    yum_repository:
+           state: present
+           name: openshift_3.9
+           description: Openshift 3.9 Development Puddle
+           baseurl: http://bastion/repo
+           enabled: yes
+           gpgcheck: no
+EOF
 # Continue Setting Up Bastion
 subscription-manager unregister
 yum -y remove RHEL7
@@ -172,7 +202,8 @@ fi
 subscription-manager attach --pool=$RHNPOOLID
 subscription-manager repos --disable="*"
 subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms"
-subscription-manager repos --enable="rhel-7-server-ose-3.7-rpms"
+yum -y install ansible
+ansible-playbook setup-repo.yml
 yum -y install atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img
 yum -y install --enablerepo="epel" jq
 touch /root/.updateok
