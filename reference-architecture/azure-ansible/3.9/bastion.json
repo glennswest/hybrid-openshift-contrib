@@ -247,6 +247,19 @@
               "priority" : 1000,
               "direction" : "Inbound"
             }
+          },
+          {
+            "name" : "default-allow-web",
+            "properties" : {
+              "protocol" : "Tcp",
+              "sourcePortRange" : "*",
+              "destinationPortRange" : "80",
+              "sourceAddressPrefix" : "VirtualNetwork",
+              "destinationAddressPrefix" : "*",
+              "access" : "Allow",
+              "priority" : 1000,
+              "direction" : "Inbound"
+            }
           }
         ]
       }
