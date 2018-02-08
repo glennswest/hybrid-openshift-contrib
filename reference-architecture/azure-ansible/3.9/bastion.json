@@ -257,7 +257,7 @@
               "sourceAddressPrefix" : "VirtualNetwork",
               "destinationAddressPrefix" : "*",
               "access" : "Allow",
-              "priority" : 1000,
+              "priority" : 1001,
               "direction" : "Inbound"
             }
           }
