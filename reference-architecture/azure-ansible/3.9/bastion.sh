@@ -543,10 +543,14 @@ cat <<EOF >> /home/${AUSERNAME}/subscribe.yml
     shell: subscription-manager repos --enable="rhel-7-server-rpms"
   - name: enable extras repos
     shell: subscription-manager repos --enable="rhel-7-server-extras-rpms"
-  - name: enable fastpath repos
-    shell: subscription-manager repos --enable="rhel-7-fast-datapath-rpms"
-  - name: enable OCP repos
-    shell: subscription-manager repos --enable="rhel-7-server-ose-3.7-rpms"
+  - name: Setup repo for svcrepo
+    yum_repository:
+           state: present
+           name: openshift_3.9
+           description: Openshift 3.9 Development Puddle
+           baseurl: http://bastion/repo
+           enabled: yes
+           gpgcheck: no
   - name: install the latest version of PyYAML
     yum: name=PyYAML state=latest
   - name: Install the OCP client
