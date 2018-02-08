@@ -133,7 +133,7 @@
       }
     },
     {
-      "type" : "extensions",
+      "type" : "Microsoft.Compute/virtualMachines/extensions",
       "name" : "[concat(parameters('vmName'),'/installcustomscript')]",
       "apiVersion" : "2015-06-15",
       "location" : "[resourceGroup().location]",
@@ -146,14 +146,16 @@
       "properties" : {
         "publisher" : "Microsoft.Compute",
         "type" : "CustomScriptExtension",
-        "typeHandlerVersion" : "1.8",
+        "typeHandlerVersion" : "1.9\t",
         "autoUpgradeMinorVersion" : true,
         "settings" : {
           "fileUris" : [
             "[concat(parameters('baseTemplateUrl'), 'nodewin.ps1')]"
           ]
         },
-        "commandToExecute" : "powershell -ExecutionPolicy Unrestricted -File nodewin.ps1"
+        "protectedSettings" : {
+          "commandToExecute" : "powershell -ExecutionPolicy Unrestricted -File nodewin.ps1"
+        }
       }
     }
   ],
