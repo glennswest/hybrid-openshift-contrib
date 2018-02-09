@@ -558,6 +558,8 @@ cat <<EOF >> /home/${AUSERNAME}/subscribe.yml
     shell: subscription-manager repos --enable="rhel-7-server-rpms"
   - name: enable extras repos
     shell: subscription-manager repos --enable="rhel-7-server-extras-rpms"
+  - name: fast data path
+    shell: subscription-manager repos --enable="rhel-7-fast-datapath-rpms"
   - name: Setup repo for svcrepo
     yum_repository:
            state: present
@@ -1234,6 +1236,7 @@ ansible-playbook  /home/${AUSERNAME}/subscribe.yml
 /home/${AUSERNAME}/create_azure_storage_container.sh sareg${RESOURCEGROUP} "registry"
 
 echo "${RESOURCEGROUP} Bastion Host is starting ansible BYO" | mail -s "${RESOURCEGROUP} Bastion BYO Install" ${RHNUSERNAME} || true
+ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml < /dev/null
 ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null
 
 wget http://master1:8443/api > healtcheck.out
