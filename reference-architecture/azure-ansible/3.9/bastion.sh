@@ -241,16 +241,13 @@ EOF
 # Create Azure Cloud Provider configuration Playbook
 
 cat > /home/${AUSERNAME}/azure-config.yml <<EOF
-#!/usr/bin/ansible-playbook
-
-- hosts: masters
+- hosts: all
   gather_facts: no
-  serial: 1
   vars_files:
   - vars.yml
   become: yes
   vars:
-    azure_conf_dir: /etc/azure
+    azure_conf_dir: /etc/origin/cloudprovider
     azure_conf: "{{ azure_conf_dir }}/azure.conf"
     master_conf: /etc/origin/master/master-config.yaml
 
@@ -269,104 +266,9 @@ cat > /home/${AUSERNAME}/azure-config.yml <<EOF
           "aadClientSecret" : "{{ g_aadClientSecret }}",
           "subscriptionID" : "{{ g_subscriptionId }}",
           "tenantID" : "{{ g_tenantId }}",
-          "resourceGroup": "{{ g_resourceGroup }}",
+          "resourceGroup": "{{ g_resourceGroup }}"
         }
 
-  - name: insert the azure disk config into the master
-    modify_yaml:
-      dest: "{{ master_conf }}"
-      yaml_key: "{{ item.key }}"
-      yaml_value: "{{ item.value }}"
-    with_items:
-    - key: kubernetesMasterConfig.apiServerArguments.cloud-config
-      value:
-      - "{{ azure_conf }}"
-
-    - key: kubernetesMasterConfig.apiServerArguments.cloud-provider
-      value:
-      - azure
-
-    - key: kubernetesMasterConfig.controllerArguments.cloud-config
-      value:
-      - "{{ azure_conf }}"
-
-    - key: kubernetesMasterConfig.controllerArguments.cloud-provider
-      value:
-      - azure
-
-  - name: restart openvswitch.service
-    shell: systemctl restart openvswitch.service
-
-  - name: restart atomic-openshift-master-controllers
-    shell: systemctl restart atomic-openshift-master-controllers
-
-  - name: restart atomic-openshift-master-api
-    shell: systemctl restart atomic-openshift-master-api
-
-  - name: restart atomic-openshift-node
-    shell: systemctl restart atomic-openshift-node
-
-  - pause:
-      minutes: 1
-#
-- hosts: nodes
-  serial: 1
-  gather_facts: no
-  vars_files:
-  - vars.yml
-  become: yes
-  vars:
-    azure_conf_dir: /etc/azure
-    azure_conf: "{{ azure_conf_dir }}/azure.conf"
-    node_conf: /etc/origin/node/node-config.yaml
-  tasks:
-  - name: make sure /etc/azure exists
-    file:
-      state: directory
-      path: "{{ azure_conf_dir }}"
-
-  - name: populate /etc/azure/azure.conf
-    copy:
-      dest: "{{ azure_conf }}"
-      content: |
-        {
-          "aadClientID" : "{{ g_aadClientId }}",
-          "aadClientSecret" : "{{ g_aadClientSecret }}",
-          "subscriptionID" : "{{ g_subscriptionId }}",
-          "tenantID" : "{{ g_tenantId }}",
-          "resourceGroup": "{{ g_resourceGroup }}",
-        }
-
-  - name: insert the azure disk config into the node
-    modify_yaml:
-      dest: "{{ node_conf }}"
-      yaml_key: "{{ item.key }}"
-      yaml_value: "{{ item.value }}"
-    with_items:
-    - key: kubeletArguments.cloud-config
-      value:
-      - "{{ azure_conf }}"
-
-    - key: kubeletArguments.cloud-provider
-      value:
-      - azure
-
-  - name: restart openvswitch.service
-    shell: systemctl restart openvswitch.service
-
-  - name: restart atomic-openshift-node
-    shell: systemctl restart atomic-openshift-node
-
-  - pause:
-      minutes: 1
-- hosts: all
-  gather_facts: no
-  vars_files:
-  - vars.yml
-  become: yes
-  tasks:
-  - name: restart openvswitch.service
-    shell: systemctl restart openvswitch.service
 EOF
 
 cat <<EOF > /etc/ansible/hosts
@@ -1238,6 +1140,7 @@ ansible-playbook  /home/${AUSERNAME}/subscribe.yml
 /home/${AUSERNAME}/create_azure_storage_container.sh sareg${RESOURCEGROUP} "registry"
 
 echo "${RESOURCEGROUP} Bastion Host is starting ansible BYO" | mail -s "${RESOURCEGROUP} Bastion BYO Install" ${RHNUSERNAME} || true
+ansible-playbook  /home/${AUSERNAME}/azure-config.yml
 ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml < /dev/null
 ansible-playbook  /usr/share/ansible/openshift-ansible/playbooks/deploy_cluster.yml < /dev/null
 
@@ -1247,7 +1150,6 @@ ansible all -b -m command -a "nmcli con modify eth0 ipv4.dns-search $(domainname
 ansible all -b -m service -a "name=NetworkManager state=restarted"
 oc patch dc registry-console -p '{"spec":{"template":{"spec":{"nodeSelector":{"role":"infra"}}}}}'
 sleep 15
-ansible-playbook  /home/${AUSERNAME}/azure-config.yml
 ansible-playbook /home/${AUSERNAME}/postinstall.yml
 cd /root
 mkdir .kube
