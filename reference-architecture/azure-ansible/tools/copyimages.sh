@@ -1,7 +1,10 @@
-./copyit.sh ose-deployer latest
+./copyit.sh ose latest
+./copyit.sh ose v3.9.0-0.41.0
+./copyit.sh ose v3.9.0
+./copyit.sh ose-deployer v3.9.0-0.41.0
 ./copyit.sh ose-docker-registry latest
 ./copyit.sh ose-haproxy-router latest
-./copyit.sh ose-pod latest
+./copyit.sh ose-pod v3.9.0-0.41.0
 ./copyit.sh ose latest
 ./copyit.sh ose v3.9.0-0.41.0
 ./copyit.sh ose v3.9.0
@@ -17,7 +20,6 @@
 ./copyit.sh ose-deployer v3.9.0-0.41.0
 ./copyit.sh ose-sti-builder v3.9.0-0.41.0
 ./copyit.sh ose-docker-builder v3.9.0-0.41.0
-./copyit.sh ose-pod v3.9.0-0.41.0
 ./copyit.sh ose-docker-registry v3.9.0-0.41.0
 ./copyit.sh logging-deployer latest
 ./copyit.sh logging-elasticsearch v3.9.0-0.41.0
