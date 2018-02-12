@@ -1299,7 +1299,7 @@ EOF
 
 chmod +x /home/${AUSERNAME}/create_pv.sh
 
-echo "Setup group_vars for windows machines
+echo "Setup group_vars for windows machines"
 mkdir /home/${AUSERNAME}/group_vars
 cat <<EOF > /home/${AUSERNAME}/windows
 ansible_user: ${AUSERNAME}
