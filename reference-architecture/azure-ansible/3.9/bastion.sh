@@ -151,6 +151,12 @@ root:\${1}@gmail.com:smtp.gmail.com:587
 EOFZ
 EOF
 chmod +x /root/setup_ssmtp.sh
+
+echo "Setup for windows nodes"
+yum -y install python-devel krb5-devel krb5-libs krb5-workstation python-kerberos python-setuptools
+yum -y install python-pip
+pip install pywinrm
+
 # Continue even if ssmtp.sh script errors out
 /root/setup_ssmtp.sh ${AUSERNAME} ${PASSWORD} ${RHNUSERNAME} || true
 
@@ -194,12 +200,6 @@ cat > /home/${AUSERNAME}/setup-repo.yml <<EOF
            gpgcheck: no
 EOF
 
-echo "Setup for windows nodes"
-yum -y install python-devel krb5-devel krb5-libs krb5-workstation python-kerberos python-setuptools
-yum-config-manager --enable epel
-yum -y install python-pip
-yum-config-manager --disable epel
-pip install pywinrm
 
 # Continue Setting Up Bastion
 subscription-manager unregister
