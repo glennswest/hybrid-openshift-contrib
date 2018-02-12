@@ -913,6 +913,9 @@
           },
           "opslogging" : {
             "value" : "[parameters('opslogging')]"
+          },
+          "numberOfWinNodes" : {
+            "value" : "[parameters('numberOfWinNodes')]"
           }
         }
       }

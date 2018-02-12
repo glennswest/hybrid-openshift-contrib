@@ -29,6 +29,7 @@ export METRICS=${array[23]}
 export LOGGING=${array[24]}
 export OPSLOGGING=${array[25]}
 export GITURL=${array[26]}
+export WINNODECOUNT=${array[27])
 export FULLDOMAIN=${THEHOSTNAME#*.*}
 export WILDCARDFQDN=${WILDCARDZONE}.${FULLDOMAIN}
 export WILDCARDIP=`dig +short ${WILDCARDFQDN}`
@@ -403,6 +404,19 @@ do
   pnum=$(printf "%02d" $c)
   echo "node${pnum} openshift_hostname=node${pnum} \
 openshift_node_labels=\"{'role':'app','zone':'default','logging':'true'}\"" >> /etc/ansible/hosts
+done
+
+cat <<EOF >> /etc/ansible/hosts
+
+[windows]
+EOF
+
+# Loop to add Nodes
+for (( c=01; c<$WINNODECOUNT+1; c++ ))
+do
+  pnum=$(printf "%02d" $c)
+  echo "winnode${pnum} openshift_hostname=winnode${pnum} \
+openshift_node_labels=\"{'role':'windows','zone':'default','logging':'true'}\"" >> /etc/ansible/hosts
 done
 
 
@@ -1276,6 +1290,17 @@ rm -f /tmp/image.vhd
 EOF
 
 chmod +x /home/${AUSERNAME}/create_pv.sh
+
+echo "Setup group_vars for windows machines
+mkdir /home/${AUSERNAME}/group_vars
+cat <<EOF > /home/${AUSERNAME}/windows
+ansible_user: ${AUSERNAME}
+ansible_password: ${PASSWORD}
+ansible_port: 5986
+ansible_connection: winrm
+# The following is necessary for Python 2.7.9+ (or any older Python that has backported SSLContext, eg, Python 2.7.5 on RHEL7) when using default WinRM self-signed certificates:
+ansible_winrm_server_cert_validation: ignore
+EOF
 
 cat <<EOF > /home/${AUSERNAME}/.ansible.cfg
 [defaults]
