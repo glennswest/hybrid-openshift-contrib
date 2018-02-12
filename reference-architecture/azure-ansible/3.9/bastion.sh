@@ -193,6 +193,14 @@ cat > /home/${AUSERNAME}/setup-repo.yml <<EOF
            enabled: yes
            gpgcheck: no
 EOF
+
+echo "Setup for windows nodes"
+yum -y install python-devel krb5-devel krb5-libs krb5-workstation python-kerberos python-setuptools
+yum-config-manager --enable epel
+yum -y install python-pip
+yum-config-manager --disable epel
+pip install pywinrm
+
 # Continue Setting Up Bastion
 subscription-manager unregister
 yum -y remove RHEL7
