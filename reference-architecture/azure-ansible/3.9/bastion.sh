@@ -153,9 +153,10 @@ EOF
 chmod +x /root/setup_ssmtp.sh
 
 echo "Setup for windows nodes"
-yum -y install python-devel krb5-devel krb5-libs krb5-workstation python-kerberos python-setuptools
-yum -y install python-pip
-pip install pywinrm
+yum -y install --enablerepo="epel" python-devel krb5-devel krb5-libs krb5-workstation python-kerberos python-setuptools
+yum -y install --enablerepo="epel" python-pip
+pip install "pywinrm>=0.2.2"
+pip install pywinrm[kerberos]
 
 # Continue even if ssmtp.sh script errors out
 /root/setup_ssmtp.sh ${AUSERNAME} ${PASSWORD} ${RHNUSERNAME} || true
@@ -1301,7 +1302,7 @@ chmod +x /home/${AUSERNAME}/create_pv.sh
 
 echo "Setup group_vars for windows machines"
 mkdir /home/${AUSERNAME}/group_vars
-cat <<EOF > /home/${AUSERNAME}/windows
+cat <<EOF > /home/${AUSERNAME}/group_vars/windows
 ansible_user: ${AUSERNAME}
 ansible_password: ${PASSWORD}
 ansible_port: 5986
