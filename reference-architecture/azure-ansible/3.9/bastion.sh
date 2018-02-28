@@ -187,7 +187,7 @@ cat > /home/${AUSERNAME}/setup-repo.yml <<EOF
     shell: docker pull hybrid.azurecr.io/svcrepo
   - name: Startup the svcrepo on port 80
     shell: docker run -d -p 80 --net=host --name svcrepo hybrid.azurecr.io/svcrepo:latest
-  - name: Open the port 
+  - name: Open the port
     shell: firewall-cmd --zone=public --add-port=80/tcp --permanent
   - name: Reload Firewall
     shell: firewall-cmd --reload
@@ -1197,6 +1197,11 @@ oc adm policy add-cluster-role-to-user cluster-admin ${AUSERNAME}
 ansible master1 -b -m fetch -a "src=/etc/origin/master/ca.serial.txt dest=/tmp/ca.serial.txt flat=true"
 ansible masters -b -m copy -a "src=/tmp/ca.serial.txt dest=/etc/origin/master/ca.serial.txt mode=644 owner=root"
 ansible-playbook /home/${AUSERNAME}/setup-sso.yml &> /home/${AUSERNAME}/setup-sso.out
+echo "Windows Node Setup"
+git clone https://github.com/glennswest/hybrid.git
+cp group_vars/windows hybrid/group_vars
+cd hybrid
+ansible-playbook windows.yml
 cat /home/${AUSERNAME}/openshift-install.out | tr -cd [:print:] |  mail -s "${RESOURCEGROUP} Install Complete" ${RHNUSERNAME} || true
 touch /root/.openshiftcomplete
 touch /home/${AUSERNAME}/.openshiftcomplete
