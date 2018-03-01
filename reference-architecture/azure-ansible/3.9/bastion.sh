@@ -1198,7 +1198,8 @@ ansible master1 -b -m fetch -a "src=/etc/origin/master/ca.serial.txt dest=/tmp/c
 ansible masters -b -m copy -a "src=/tmp/ca.serial.txt dest=/etc/origin/master/ca.serial.txt mode=644 owner=root"
 ansible-playbook /home/${AUSERNAME}/setup-sso.yml &> /home/${AUSERNAME}/setup-sso.out
 echo "Windows Node Setup"
-git clone https://github.com/glennswest/hybrid.git
+git clone https://github.com/glennswest/hybrid.git /home/${AUSERNAME}/hybrid
+cd /home/${AUSERNAME}
 cp group_vars/windows hybrid/group_vars
 cd hybrid
 ansible-playbook windows.yml
