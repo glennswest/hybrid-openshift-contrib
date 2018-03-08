@@ -632,8 +632,8 @@
     "apiVersionLinkTemplate" : "2015-01-01",
     "windows" : {
       "publisher" : "MicrosoftWindowsServer",
-      "offer" : "WindowsServer",
-      "sku" : "2016-Datacenter-with-Containers",
+      "offer" : "WindowsServerSemiAnnual",
+      "sku" : "Datacenter-Core-1709-with-Containers-smalldisk",
       "version" : "latest"
     }
   },
