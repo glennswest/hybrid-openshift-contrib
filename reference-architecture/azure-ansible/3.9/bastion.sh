@@ -439,24 +439,18 @@ cat <<EOF >> /home/${AUSERNAME}/subscribe.yml
     shell: subscription-manager repos --disable="*"
   - name: enable rhel7 repo
     shell: subscription-manager repos --enable="rhel-7-server-rpms"
+  - name: enable rhel7 extras
+    shell: subscription-manager repos --enable="rhel-7-server-extras-rpms"
   - name: enable extras repos
     shell: subscription-manager repos --enable="rhel-7-server-extras-rpms"
   - name: fast data path
     shell: subscription-manager repos --enable="rhel-7-fast-datapath-rpms"
-  - name: Setup repo for svcrepo
-    yum_repository:
-           state: present
-           name: openshift_3.9
-           description: Openshift 3.9 Development Puddle
-           baseurl: http://{{bastionip}}/repo
-           enabled: yes
-           gpgcheck: no
+  - name: OSE 3.9 Repo
+    shell: subscription-manager repos --enable="rhel-7-server-ose-3.9-rpms"
   - name: install the latest version of PyYAML
     yum: name=PyYAML state=latest
   - name: Install the OCP client
     yum: name=atomic-openshift-clients state=latest
-  - name: Install atomic-openshift
-    yum: name=atomic-openshift state=latest
   - name: Update all hosts
     yum: name="*" state=latest
   - name: Install the docker
