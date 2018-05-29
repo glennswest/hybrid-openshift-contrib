@@ -164,42 +164,6 @@ pip install pywinrm[kerberos]
 sleep 30
 echo "${RESOURCEGROUP} Bastion Host is starting software update" | mail -s "${RESOURCEGROUP} Bastion Software Install" ${RHNUSERNAME} || true
 yum install -y python-dns
-cat > /home/${AUSERNAME}/setup-repo.yml <<EOF
-#!/usr/bin/ansible-playbook
-- hosts: localhost
-  connection: local
-  gather_facts: no
-  serial: 1
-  become: yes
-  vars:
-    bastionip: "{{lookup('dig', 'bastion')}}"
-  tasks:
-  - name: Install the docker
-    yum: name=docker state=latest
-  - name: Start Docker
-    service:
-      name: docker
-      enabled: yes
-      state: started
-  - name: Login To Azure Registry
-    shell: docker login hybrid.azurecr.io -u hybrid -p gw35L0FqSowSM25QFY3WdIcUJ+PZCOAR
-  - name: Pull the Repo Container
-    shell: docker pull hybrid.azurecr.io/svcrepo
-  - name: Startup the svcrepo on port 80
-    shell: docker run -d -p 80 --net=host --name svcrepo hybrid.azurecr.io/svcrepo:latest
-  - name: Open the port
-    shell: firewall-cmd --zone=public --add-port=80/tcp --permanent
-  - name: Reload Firewall
-    shell: firewall-cmd --reload
-  - name: Setup repo for svcrepo
-    yum_repository:
-           state: present
-           name: openshift_3.9
-           description: Openshift 3.9 Development Puddle
-           baseurl: http://{{bastionip}}/repo
-           enabled: yes
-           gpgcheck: no
-EOF
 
 
 # Continue Setting Up Bastion
@@ -218,10 +182,9 @@ else
 fi
 subscription-manager attach --pool=$RHNPOOLID
 subscription-manager repos --disable="*"
-subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms"
-yum -y install ansible
-ansible-playbook /home/${AUSERNAME}/setup-repo.yml
-yum -y install atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img
+subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms" --enable="rhel-7-server-ose-3.9-rpms" --enable="rhel-7-server-ansible-2.4-rpms"
+# ansible-playbook /home/${AUSERNAME}/setup-repo.yml
+yum -y install wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker ansible
 yum -y install --enablerepo="epel" jq
 touch /root/.updateok
 
@@ -290,18 +253,11 @@ new_nodes
 new_masters
 
 [OSEv3:vars]
-openshift_vers=v3_9
+#openshift_vers=v3_9
 #osm_controller_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf']}
 #osm_api_server_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf']}
 #openshift_node_kubelet_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf'], 'enable-controller-attach-detach': ['true']}
-openshift_disable_check=docker_image_availability
-openshift_docker_additional_registries="hybrid.azurecr.io"
-oreg_url="hybrid.azurecr.io/openshift3/ose-\${component}:\${version}"
-openshift_web_console_prefix="hybrid.azurecr.io/openshift3/ose-\${component}:\${version}"
-template_service_broker_prefix="hybrid.azurecr.io/openshift3/ose-\${component}:\${version}"
-ose-ansible-service-broker="hybrid.azurecr.io/openshift3/ose-\${component}:\${version}"
 oreg_auth_user=hybrid
-oreg_auth_password="gw35L0FqSowSM25QFY3WdIcUJ+PZCOAR"
 openshift_clock_enabled=true
 openshift_enable_service_catalog=false
 debug_level=2
@@ -316,7 +272,7 @@ openshift_master_api_port="{{ console_port }}"
 openshift_master_console_port="{{ console_port }}"
 openshift_override_hostname_check=true
 osm_use_cockpit=false
-openshift_release=v3.9
+#openshift_release=v3.9
 openshift_cloudprovider_kind=azure
 openshift_node_local_quota_per_fsgroup=512Mi
 azure_resource_group=${RESOURCEGROUP}
