@@ -220,7 +220,7 @@ cat > /home/${AUSERNAME}/azure-config.yml <<EOF
   - vars.yml
   become: yes
   vars:
-    azure_conf_dir: /etc/origin/cloudprovider
+    azure_conf_dir: /etc/azure
     azure_conf: "{{ azure_conf_dir }}/azure.conf"
     master_conf: /etc/origin/master/master-config.yaml
 
@@ -267,7 +267,7 @@ openshift_node_debug_level="{{ node_debug_level | default(debug_level, true) }}"
 openshift_master_debug_level="{{ master_debug_level | default(debug_level, true) }}"
 openshift_master_access_token_max_seconds=2419200
 openshift_hosted_router_replicas=3
-openshift_hosted_registry_replicas=3
+openshift_hosted_registry_replicas=1
 openshift_master_api_port="{{ console_port }}"
 openshift_master_console_port="{{ console_port }}"
 openshift_override_hostname_check=true
@@ -282,12 +282,12 @@ deployment_type=openshift-enterprise
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
 openshift_master_manage_htpasswd=false
 # Setup azure blob registry storage
-openshift_hosted_registry_storage_kind=object
-openshift_hosted_registry_storage_provider=azure_blob
-openshift_hosted_registry_storage_azure_blob_accountname=${REGISTRYSTORAGENAME}
-openshift_hosted_registry_storage_azure_blob_accountkey=${REGISTRYKEY}
-openshift_hosted_registry_storage_azure_blob_container=registry
-openshift_hosted_registry_storage_azure_blob_realm=core.windows.net
+# openshift_hosted_registry_storage_kind=object
+# openshift_hosted_registry_storage_provider=azure_blob
+# openshift_hosted_registry_storage_azure_blob_accountname=${REGISTRYSTORAGENAME}
+# openshift_hosted_registry_storage_azure_blob_accountkey=${REGISTRYKEY}
+# openshift_hosted_registry_storage_azure_blob_container=registry
+# openshift_hosted_registry_storage_azure_blob_realm=core.windows.net
 
 os_sdn_network_plugin_name=${OPENSHIFTSDN}
 
