@@ -272,7 +272,7 @@ openshift_master_api_port="{{ console_port }}"
 openshift_master_console_port="{{ console_port }}"
 openshift_override_hostname_check=true
 osm_use_cockpit=false
-openshift_release=v3.9
+#openshift_release=v3.9
 openshift_cloudprovider_kind=azure
 openshift_node_local_quota_per_fsgroup=512Mi
 azure_resource_group=${RESOURCEGROUP}
@@ -282,21 +282,21 @@ deployment_type=openshift-enterprise
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
 openshift_master_manage_htpasswd=false
 # Setup azure blob registry storage
-# openshift_hosted_registry_storage_kind=object
-# openshift_hosted_registry_storage_provider=azure_blob
-# openshift_hosted_registry_storage_azure_blob_accountname=${REGISTRYSTORAGENAME}
-# openshift_hosted_registry_storage_azure_blob_accountkey=${REGISTRYKEY}
-# openshift_hosted_registry_storage_azure_blob_container=registry
-# openshift_hosted_registry_storage_azure_blob_realm=core.windows.net
+openshift_hosted_registry_storage_kind=object
+openshift_hosted_registry_storage_provider=azure_blob
+openshift_hosted_registry_storage_azure_blob_accountname=${REGISTRYSTORAGENAME}
+openshift_hosted_registry_storage_azure_blob_accountkey=${REGISTRYKEY}
+openshift_hosted_registry_storage_azure_blob_container=registry
+openshift_hosted_registry_storage_azure_blob_realm=core.windows.net
 
 os_sdn_network_plugin_name=${OPENSHIFTSDN}
 
 # default selectors for router and registry services
-openshift_router_selector='role=infra'
-openshift_registry_selector='role=infra'
+#openshift_router_selector='role=infra'
+#openshift_registry_selector='role=infra'
 
 # Select default nodes for projects
-osm_default_node_selector="role=app"
+#osm_default_node_selector="role=app"
 ansible_become=yes
 ansible_ssh_user=${AUSERNAME}
 remote_user=${AUSERNAME}
@@ -355,9 +355,9 @@ master3
 [new_masters]
 
 [nodes]
-master1 openshift_hostname=master1 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" openshift_schedulable=false
-master2 openshift_hostname=master2 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" openshift_schedulable=false
-master3 openshift_hostname=master3 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" openshift_schedulable=false
+master1 openshift_hostname=master1 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" 
+master2 openshift_hostname=master2 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" 
+master3 openshift_hostname=master3 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" 
 infranode1 openshift_hostname=infranode1 openshift_node_labels="{'role': 'infra', 'zone': 'default','logging':'true'}"
 infranode2 openshift_hostname=infranode2 openshift_node_labels="{'role': 'infra', 'zone': 'default','logging':'true'}"
 infranode3 openshift_hostname=infranode3 openshift_node_labels="{'role': 'infra', 'zone': 'default','logging':'true'}"
