@@ -263,7 +263,7 @@ openshift_clock_enabled=true
 openshift_enable_service_catalog=false
 debug_level=2
 console_port=8443
-docker_udev_workaround=True
+#docker_udev_workaround=True
 openshift_node_debug_level="{{ node_debug_level | default(debug_level, true) }}"
 openshift_master_debug_level="{{ master_debug_level | default(debug_level, true) }}"
 openshift_master_access_token_max_seconds=2419200
@@ -293,8 +293,8 @@ openshift_hosted_registry_storage_azure_blob_realm=core.windows.net
 os_sdn_network_plugin_name=${OPENSHIFTSDN}
 
 # default selectors for router and registry services
-#openshift_router_selector='role=infra'
-#openshift_registry_selector='role=infra'
+openshift_router_selector='role=infra'
+openshift_registry_selector='role=infra'
 
 # Select default nodes for projects
 #osm_default_node_selector="role=app"
