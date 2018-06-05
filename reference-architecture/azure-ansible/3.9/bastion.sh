@@ -1158,7 +1158,7 @@ git clone https://github.com/glennswest/hybrid.git /home/${AUSERNAME}/hybrid
 cd /home/${AUSERNAME}
 cp group_vars/windows hybrid/group_vars
 cd hybrid
-ansible-playbook windows.yml
+# ansible-playbook windows.yml
 cat /home/${AUSERNAME}/openshift-install.out | tr -cd [:print:] |  mail -s "${RESOURCEGROUP} Install Complete" ${RHNUSERNAME} || true
 touch /root/.openshiftcomplete
 touch /home/${AUSERNAME}/.openshiftcomplete
