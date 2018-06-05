@@ -249,7 +249,6 @@ cat <<EOF > /etc/ansible/hosts
 masters
 nodes
 etcd
-lb
 new_nodes
 new_masters
 
@@ -297,16 +296,11 @@ openshift_router_selector='role=infra'
 openshift_registry_selector='role=infra'
 
 # Select default nodes for projects
-#osm_default_node_selector="role=app"
 ansible_become=yes
 ansible_ssh_user=${AUSERNAME}
 remote_user=${AUSERNAME}
 
 openshift_master_default_subdomain=${WILDCARDNIP}
-#openshift_master_default_subdomain=${WILDCARDZONE}.${FULLDOMAIN}
-# osm_default_subdomain=${WILDCARDZONE}.${FULLDOMAIN}
-osm_default_subdomain=${WILDCARDNIP}
-openshift_use_dnsmasq=true
 openshift_public_hostname=${RESOURCEGROUP}.${FULLDOMAIN}
 
 openshift_master_cluster_method=native
@@ -352,10 +346,6 @@ master1
 master2
 master3
 
-[lb]
-master1
-master2
-master3
 
 [new_nodes]
 [new_masters]
