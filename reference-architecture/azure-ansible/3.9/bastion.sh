@@ -249,14 +249,15 @@ cat <<EOF > /etc/ansible/hosts
 masters
 nodes
 etcd
+lb
 new_nodes
 new_masters
 
 [OSEv3:vars]
-#openshift_vers=v3_9
-osm_controller_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf']}
-osm_api_server_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf']}
-openshift_node_kubelet_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf'], 'enable-controller-attach-detach': ['true']}
+openshift_vers=v3_9
+#osm_controller_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf']}
+#osm_api_server_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf']}
+#openshift_node_kubelet_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf'], 'enable-controller-attach-detach': ['true']}
 #oreg_auth_user=hybrid
 openshift_clock_enabled=true
 openshift_enable_service_catalog=false
@@ -273,7 +274,7 @@ openshift_master_console_port="{{ console_port }}"
 openshift_override_hostname_check=true
 osm_use_cockpit=false
 openshift_release=v3.9
-openshift_cloudprovider_kind=azure
+#openshift_cloudprovider_kind=azure
 openshift_node_local_quota_per_fsgroup=512Mi
 azure_resource_group=${RESOURCEGROUP}
 rhn_pool_id=${RHNPOOLID}
@@ -347,6 +348,11 @@ master2 openshift_hostname=master2 openshift_node_labels="{'role': 'master'}"
 master3 openshift_hostname=master3 openshift_node_labels="{'role': 'master'}"
 
 [etcd]
+master1
+master2
+master3
+
+[lb]
 master1
 master2
 master3
