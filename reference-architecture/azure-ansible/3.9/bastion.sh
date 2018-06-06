@@ -1293,6 +1293,8 @@ EOF
 
 cd /home/${AUSERNAME}
 chmod 755 /home/${AUSERNAME}/openshift-install.sh
+echo "Please manually run install"
+exit 0
 echo "${RESOURCEGROUP} Bastion Host is starting OpenShift Install" | mail -s "${RESOURCEGROUP} Bastion OpenShift Install Starting" ${RHNUSERNAME} || true
 /home/${AUSERNAME}/openshift-install.sh &> /home/${AUSERNAME}/openshift-install.out &
 chmod 755 /home/${AUSERNAME}/openshift-postinstall.sh
