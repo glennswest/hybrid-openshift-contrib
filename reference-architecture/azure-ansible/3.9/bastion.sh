@@ -184,7 +184,7 @@ subscription-manager attach --pool=$RHNPOOLID
 subscription-manager repos --disable="*"
 subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-fast-datapath-rpms" --enable="rhel-7-server-ose-3.9-rpms" --enable="rhel-7-server-ansible-2.4-rpms"
 # ansible-playbook /home/${AUSERNAME}/setup-repo.yml
-yum -y install wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker ansible
+yum -y install wget git net-tools atomic-openshift-utils git net-tools bind-utils iptables-services bridge-utils bash-completion httpd-tools nodejs qemu-img kexec-tools sos psacct docker-1.13.1 ansible
 yum -y install --enablerepo="epel" jq
 touch /root/.updateok
 
@@ -437,12 +437,10 @@ cat <<EOF >> /home/${AUSERNAME}/subscribe.yml
     shell: subscription-manager repos --enable="rhel-7-server-rpms"
   - name: enable rhel7 extras
     shell: subscription-manager repos --enable="rhel-7-server-extras-rpms"
-  - name: enable extras repos
-    shell: subscription-manager repos --enable="rhel-7-server-extras-rpms"
-  - name: fast data path
-    shell: subscription-manager repos --enable="rhel-7-fast-datapath-rpms"
   - name: OSE 3.9 Repo
     shell: subscription-manager repos --enable="rhel-7-server-ose-3.9-rpms"
+  - name: fast data path
+    shell: subscription-manager repos --enable="rhel-7-fast-datapath-rpms"
   - name: install the latest version of PyYAML
     yum: name=PyYAML state=latest
   - name: Install the OCP client
@@ -450,7 +448,7 @@ cat <<EOF >> /home/${AUSERNAME}/subscribe.yml
   - name: Update all hosts
     yum: name="*" state=latest
   - name: Install the docker
-    yum: name=docker state=latest
+    shell: yum -y install docker-1.13.1
   - name: Start Docker
     service:
       name: docker
