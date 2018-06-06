@@ -261,7 +261,7 @@ new_masters
 openshift_clock_enabled=true
 openshift_enable_service_catalog=false
 debug_level=2
-console_port=8442
+console_port=8443
 docker_udev_workaround=True
 openshift_node_debug_level="{{ node_debug_level | default(debug_level, true) }}"
 openshift_master_debug_level="{{ master_debug_level | default(debug_level, true) }}"
