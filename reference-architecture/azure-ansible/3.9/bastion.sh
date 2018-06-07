@@ -289,7 +289,8 @@ openshift_hosted_registry_storage_azure_blob_accountkey=${REGISTRYKEY}
 openshift_hosted_registry_storage_azure_blob_container=registry
 openshift_hosted_registry_storage_azure_blob_realm=core.windows.net
 
-os_sdn_network_plugin_name=${OPENSHIFTSDN}
+openshift_use_openshift_sdn=false
+os_sdn_network_plugin_name=cni
 
 # default selectors for router and registry services
 openshift_router_selector='role=infra'
