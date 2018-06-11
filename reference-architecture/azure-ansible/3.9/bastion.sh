@@ -257,7 +257,9 @@ new_masters
 #osm_controller_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf']}
 #osm_api_server_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf']}
 #openshift_node_kubelet_args={'cloud-provider': ['azure'], 'cloud-config': ['/etc/azure/azure.conf'], 'enable-controller-attach-detach': ['true']}
-oreg_url=registry.access.redhat.com/openshift3/ose-${component}:${version}
+oreg_url=registry.access.redhat.com/openshift3/ose-\${component}:\${version}
+oreg_url_master=registry.access.redhat.com/openshift3/ose-\${component}:\${version}
+oreg_url_node=registry.access.redhat.com/openshift3/ose-\${component}:\${version}
 openshift_examples_modify_imagestreams=true
 openshift_clock_enabled=true
 openshift_enable_service_catalog=false
@@ -450,7 +452,7 @@ cat <<EOF >> /home/${AUSERNAME}/subscribe.yml
   - name: Update all hosts
     yum: name="*" state=latest
   - name: Install the docker
-    shell: yum -y install docker-1.13.1
+    shell: yum -y install docker-1.13.1 
   - name: Start Docker
     service:
       name: docker
