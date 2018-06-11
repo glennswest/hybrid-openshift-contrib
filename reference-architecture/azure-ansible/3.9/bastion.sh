@@ -1136,9 +1136,9 @@ echo "Setup Azure PV"
 /home/${AUSERNAME}/create_azure_storage_container.sh sapv${RESOURCEGROUP} "vhds"
 
 echo "Setup Azure PV for metrics & logging"
-/home/${AUSERNAME}/create_azure_storage_container.sh sapvlm${RESOURCEGROUP} "loggingmetricspv"
+#/home/${AUSERNAME}/create_azure_storage_container.sh sapvlm${RESOURCEGROUP} "loggingmetricspv"
 
-oc adm policy add-cluster-role-to-user cluster-admin ${AUSERNAME}
+#oc adm policy add-cluster-role-to-user cluster-admin ${AUSERNAME}
 #ansible-playbook /home/${AUSERNAME}/setup-sso.yml &> /home/${AUSERNAME}/setup-sso.out
 echo "Windows Node Setup"
 git clone https://github.com/glennswest/hybrid.git /home/${AUSERNAME}/hybrid
@@ -1146,7 +1146,7 @@ cd /home/${AUSERNAME}
 cp group_vars/windows hybrid/group_vars
 cd hybrid
 ./setup_clients.sh || true
-ansible-playbook ovn_setup.yml || true
+#ansible-playbook ovn_setup.yml || true
 # ansible-playbook windows.yml
 cat /home/${AUSERNAME}/openshift-install.out | tr -cd [:print:] |  mail -s "${RESOURCEGROUP} Install Complete" ${RHNUSERNAME} || true
 touch /root/.openshiftcomplete
