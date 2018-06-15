@@ -1145,9 +1145,9 @@ git clone https://github.com/glennswest/hybrid.git /home/${AUSERNAME}/hybrid
 cd /home/${AUSERNAME}
 cp group_vars/windows hybrid/group_vars
 cd hybrid
-./setup_clients.sh || true
-ansible-playbook ovn_presetup.yml > ovn_presetup.out || true
-ansible-playbook ovn_postsetup.yml > ovn_postsetup.out || true
+#./setup_clients.sh || true
+#ansible-playbook ovn_presetup.yml > ovn_presetup.out || true
+#ansible-playbook ovn_postsetup.yml > ovn_postsetup.out || true
 # ansible-playbook windows.yml
 cat /home/${AUSERNAME}/openshift-install.out | tr -cd [:print:] |  mail -s "${RESOURCEGROUP} Install Complete" ${RHNUSERNAME} || true
 touch /root/.openshiftcomplete
@@ -1296,6 +1296,7 @@ EOF
 cd /home/${AUSERNAME}
 chmod 755 /home/${AUSERNAME}/openshift-install.sh
 echo "Please manually run install"
+exit
 echo "${RESOURCEGROUP} Bastion Host is starting OpenShift Install" | mail -s "${RESOURCEGROUP} Bastion OpenShift Install Starting" ${RHNUSERNAME} || true
 /home/${AUSERNAME}/openshift-install.sh &> /home/${AUSERNAME}/openshift-install.out &
 chmod 755 /home/${AUSERNAME}/openshift-postinstall.sh
