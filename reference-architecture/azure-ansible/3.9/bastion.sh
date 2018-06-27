@@ -294,8 +294,8 @@ openshift_use_openshift_sdn=false
 os_sdn_network_plugin_name=cni
 
 # default selectors for router and registry services
-openshift_router_selector='role=infra'
-openshift_registry_selector='role=infra'
+openshift_router_selector='region=infra'
+openshift_registry_selector='region=infra'
 
 # Select default nodes for projects
 ansible_become=yes
@@ -314,9 +314,9 @@ openshift_metrics_install_metrics=false
 openshift_metrics_cassandra_storage_type=pv
 openshift_metrics_cassandra_pvc_size="${METRICS_CASSANDRASIZE}G"
 openshift_metrics_cassandra_replicas="${METRICS_INSTANCES}"
-openshift_metrics_hawkular_nodeselector={"role":"infra"}
-openshift_metrics_cassandra_nodeselector={"role":"infra"}
-openshift_metrics_heapster_nodeselector={"role":"infra"}
+openshift_metrics_hawkular_nodeselector={"region":"infra"}
+openshift_metrics_cassandra_nodeselector={"region":"infra"}
+openshift_metrics_heapster_nodeselector={"region":"infra"}
 
 # Do not install logging but post install
 openshift_logging_install_logging=false
@@ -325,18 +325,18 @@ openshift_logging_es_pvc_dynamic="false"
 openshift_logging_es_pvc_size="${LOGGING_ES_SIZE}G"
 openshift_logging_es_cluster_size=${LOGGING_ES_INSTANCES}
 openshift_logging_fluentd_nodeselector={"logging":"true"}
-openshift_logging_es_nodeselector={"role":"infra"}
-openshift_logging_kibana_nodeselector={"role":"infra"}
-openshift_logging_curator_nodeselector={"role":"infra"}
+openshift_logging_es_nodeselector={"region":"infra"}
+openshift_logging_kibana_nodeselector={"region":"infra"}
+openshift_logging_curator_nodeselector={"region":"infra"}
 
 openshift_logging_use_ops=false
 openshift_logging_es_ops_pv_selector={"usage":"opselasticsearch"}
 openshift_logging_es_ops_pvc_dynamic="false"
 openshift_logging_es_ops_pvc_size="${OPSLOGGING_ES_SIZE}G"
 openshift_logging_es_ops_cluster_size=${OPSLOGGING_ES_INSTANCES}
-openshift_logging_es_ops_nodeselector={"role":"infra"}
-openshift_logging_kibana_ops_nodeselector={"role":"infra"}
-openshift_logging_curator_ops_nodeselector={"role":"infra"}
+openshift_logging_es_ops_nodeselector={"region":"infra"}
+openshift_logging_kibana_ops_nodeselector={"region":"infra"}
+openshift_logging_curator_ops_nodeselector={"region":"infra"}
 
 [masters]
 master1 openshift_hostname=master1 openshift_node_labels="{'role': 'master'}"
@@ -356,9 +356,9 @@ master3
 master1 openshift_hostname=master1 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" 
 master2 openshift_hostname=master2 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" 
 master3 openshift_hostname=master3 openshift_node_labels="{'role':'master','zone':'default','logging':'true'}" 
-infranode1 openshift_hostname=infranode1 openshift_node_labels="{'role': 'infra', 'zone': 'default','logging':'true'}"
-infranode2 openshift_hostname=infranode2 openshift_node_labels="{'role': 'infra', 'zone': 'default','logging':'true'}"
-infranode3 openshift_hostname=infranode3 openshift_node_labels="{'role': 'infra', 'zone': 'default','logging':'true'}"
+infranode1 openshift_hostname=infranode1 openshift_node_labels="{'region': 'infra', 'zone': 'default','logging':'true'}"
+infranode2 openshift_hostname=infranode2 openshift_node_labels="{'region': 'infra', 'zone': 'default','logging':'true'}"
+infranode3 openshift_hostname=infranode3 openshift_node_labels="{'region': 'infra', 'zone': 'default','logging':'true'}"
 EOF
 
 # Loop to add Nodes
@@ -366,7 +366,7 @@ for (( c=01; c<$NODECOUNT+1; c++ ))
 do
   pnum=$(printf "%02d" $c)
   echo "node${pnum} openshift_hostname=node${pnum} \
-openshift_node_labels=\"{'role':'app','zone':'default','logging':'true'}\"" >> /etc/ansible/hosts
+openshift_node_labels=\"{'region':'primary','zone':'default','logging':'true'}\"" >> /etc/ansible/hosts
 done
 
 cat <<EOF >> /etc/ansible/hosts
